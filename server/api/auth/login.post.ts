@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const loginPayload: LoginPayload = await readValidatedBody(event, prettyPrintError(loginValidator));
+  const loginPayload: LoginPayload = await readValidatedBody(event, loginValidator.parse);
   const repo = useRepo(event, UserPublicRepo);
 
   const user = await repo.findOneByEmail(loginPayload.email);

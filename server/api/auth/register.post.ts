@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const registerPayload: RegisterPayload = await readValidatedBody(event, prettyPrintError(registerValidator));
+  const registerPayload: RegisterPayload = await readValidatedBody(event, registerValidator.parse);
   const repo = useRepo(event, UserPublicRepo);
 
   const password = await hashPassword(registerPayload.password);
