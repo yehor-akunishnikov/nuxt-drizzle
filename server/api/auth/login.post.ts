@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const loginPayload: LoginPayload = await readValidatedBody(event, loginValidator.parse);
+  const loginPayload: LoginPayload = await readValidatedBody(event, prettyPrintError(loginValidator));
 
   const { id, name } = await findUser(loginPayload);
 

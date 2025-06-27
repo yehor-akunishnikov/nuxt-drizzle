@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const registerPayload: RegisterPayload = await readValidatedBody(event, registerValidator.parse);
+  const registerPayload: RegisterPayload = await readValidatedBody(event, prettyPrintError(registerValidator));
   const password = await hashPassword(registerPayload.password);
 
   try {
