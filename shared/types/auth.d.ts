@@ -6,4 +6,8 @@ declare module "#auth-utils" {
   }
 }
 
+export type AuthResponse = {
+  message: string;
+};
+
 export {};

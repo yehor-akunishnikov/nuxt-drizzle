@@ -15,7 +15,7 @@ const formState = reactive({
 
 async function register(event: FormSubmitEvent<RegisterPayload>) {
   try {
-    await $fetch("/api/auth/register", {
+    await $fetch<AuthResponse>("/api/auth/register", {
       method: "POST",
       body: event.data,
     });
