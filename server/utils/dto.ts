@@ -1,6 +1,3 @@
-import type { UserSelect } from "./drizzle";
-import { omit } from "./common";
-
 export function userPublicDto(user: UserSelect) {
   return omit(user, ["password", "createdAt"]);
 }
