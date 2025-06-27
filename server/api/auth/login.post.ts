@@ -1,28 +1,21 @@
 export default defineEventHandler(async (event) => {
   const loginPayload: LoginPayload = await readValidatedBody(event, prettyPrintError(loginValidator));
+  const repo = useRepo(event, UserPublicRepo);
 
-  const { id, name } = await findUser(loginPayload);
+  const user = await repo.findOneByEmail(loginPayload.email);
 
-  await setUserSession(event, {
-    user: { id, name },
-    loggedInAt: Date.now(),
-  });
+  if (user) {
+    const isVerified = await verifyPassword(user.password, loginPayload.password);
 
-  return { message: "Successful login!" };
+    if (isVerified) {
+      await setUserSession(event, {
+        user: pick(user, ["id", "name", "email"]),
+        loggedInAt: Date.now(),
+      });
+
+      return { message: "Successful login!" };
+    }
+  }
+
+  throw createUnauthorizedError("Failed to login.");
 });
-
-async function findUser(loginPayload: LoginPayload): Promise<UserSelect> {
-  const user = await useDrizzle()
-    .select()
-    .from(tables.userSchema)
-    .where(eq(tables.userSchema.email, loginPayload.email))
-    .then(users => users[0]);
-
-  if (!user) throw createUnauthorizedError("Failed to login.");
-
-  const isPasswordMatch = await verifyPassword(user.password, loginPayload.password);
-
-  if (!isPasswordMatch) throw createUnauthorizedError("Failed to login.");
-
-  return user;
-}

@@ -1,3 +1,5 @@
+import type { H3Event } from "h3";
+
 import { drizzle } from "drizzle-orm/node-postgres";
 
 import * as schema from "~/server/database/models/schema";
@@ -8,22 +10,25 @@ export * from "../database/models/types";
 
 export const tables = schema;
 
-export function useDrizzle() {
-  return drizzle(process.env.DB_URL, {
-    schema: schema,
-  });
-}
-
 export type PostgresError = Error & {
-  code: string;
-  detail?: string;
+  cause: {
+    code: string;
+  };
 };
 
 export function isPostgresError(error: unknown): error is PostgresError {
   return (
     typeof error === "object"
     && error !== null
-    && "code" in error
-    && typeof (error as any).code === "string"
+    && "cause" in error
+    && typeof (error as any).cause === "object"
   );
+}
+
+export function useDrizzle(event: H3Event) {
+  const config = useRuntimeConfig(event);
+
+  return drizzle(config.dbUrl, {
+    schema: schema,
+  });
 }

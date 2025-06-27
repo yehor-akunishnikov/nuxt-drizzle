@@ -1,3 +1,2 @@
-DB_URL=postgres://user:password@localhost:5432/db
-
+NUXT_DB_URL=postgres://user:password@localhost:5432/db
 NUXT_SESSION_PASSWORD=RANDOM_SESSION_PASSWORD
