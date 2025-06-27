@@ -32,3 +32,5 @@ export function useDrizzle(event: H3Event) {
     schema: schema,
   });
 }
+
+export type DrizzleInstance = ReturnType<typeof useDrizzle>;

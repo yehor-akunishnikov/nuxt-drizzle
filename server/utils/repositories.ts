@@ -1,16 +1,15 @@
-import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { H3Event } from "h3";
 
 class Repo {
   constructor(
-    protected readonly drizzle: NodePgDatabase<typeof tables> & { $client: string },
+    protected readonly drizzle: DrizzleInstance,
   ) {
   }
 }
 
 class ProtectedRepo {
   constructor(
-    protected readonly drizzle: NodePgDatabase<typeof tables> & { $client: string },
+    protected readonly drizzle: DrizzleInstance,
     protected readonly userId: number,
   ) {
   }

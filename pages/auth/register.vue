@@ -13,7 +13,7 @@ const formState = reactive({
   password: "",
 });
 
-async function register(event: FormSubmitEvent<RegisterPayload>) {
+async function register(event: FormSubmitEvent<RegisterPayload>): Promise<void> {
   try {
     await $fetch<AuthResponse>("/api/auth/register", {
       method: "POST",
