@@ -9,7 +9,11 @@ export function pick<
 ): Pick<T, K[number]> {
   return Object.fromEntries(
     Object.entries(data).filter(
-      ([key]) => pickKeys.includes(key as keyof T),
+      (entry) => {
+        const key = entry[0] as keyof T;
+
+        return pickKeys.includes(key) && data[key] !== null;
+      },
     ),
   ) as Pick<T, K[number]>;
 }
@@ -23,7 +27,11 @@ export function omit<
 ): Omit<T, K[number]> {
   return Object.fromEntries(
     Object.entries(data).filter(
-      ([key]) => !omitKeys.includes(key as keyof T),
+      (entry) => {
+        const key = entry[0] as keyof T;
+
+        return !omitKeys.includes(key) && data[key] !== null;
+      },
     ),
   ) as Omit<T, K[number]>;
 }
