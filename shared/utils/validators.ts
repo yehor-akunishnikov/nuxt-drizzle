@@ -22,3 +22,17 @@ export const loginValidator = z.strictObject({
 });
 
 export type LoginPayload = z.infer<typeof loginValidator>;
+
+export const createFragmentValidator = z.strictObject({
+  text: z.string().nonempty({ error: "Required" }),
+  note: z.string().optional(),
+});
+
+export type CreateFragmentPayload = z.infer<typeof createFragmentValidator>;
+
+export const updateFragmentValidator = z.strictObject({
+  text: z.string().nonempty({ error: "Required" }),
+  note: z.string().optional(),
+});
+
+export type UpdateFragmentPayload = z.infer<typeof updateFragmentValidator>;

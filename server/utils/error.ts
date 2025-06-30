@@ -33,3 +33,13 @@ export function createInternalServerError(
     message: message,
   });
 }
+
+export function createNotFoundError(
+  message: string = "Unable to find entity.",
+) {
+  return createError({
+    status: 404,
+    statusMessage: "Not found",
+    message: message,
+  });
+}

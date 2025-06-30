@@ -1,4 +1,5 @@
 import type { H3Event } from "h3";
+import type { FragmentInsert } from "./drizzle";
 
 class Repo {
   constructor(
@@ -43,8 +44,8 @@ export class UserPublicRepo extends Repo {
       .then(users => users[0]);
   }
 
-  public async insert(registerPayload: RegisterPayload): Promise<void> {
-    await this.drizzle.insert(tables.userSchema).values({ ...registerPayload });
+  public async insert(payload: UserInsert): Promise<void> {
+    await this.drizzle.insert(tables.userSchema).values({ ...payload });
   }
 }
 
@@ -55,5 +56,67 @@ export class UserProtectedRepo extends ProtectedRepo {
       .from(tables.userSchema)
       .where(eq(tables.userSchema.id, this.userId))
       .then(users => users[0]);
+  }
+}
+
+export class FragmentRepo extends ProtectedRepo {
+  public async create(
+    payload: Omit<FragmentInsert, "authorId" | "createdAt" | "updatedAt">,
+  ): Promise<FragmentSelect> {
+    return this.drizzle
+      .insert(tables.fragmentSchema)
+      .values({ ...payload, authorId: this.userId })
+      .returning()
+      .then(fragments => fragments[0]);
+  }
+
+  public async findAll(): Promise<FragmentSelect[]> {
+    return this.drizzle
+      .select()
+      .from(tables.fragmentSchema)
+      .where(eq(tables.fragmentSchema.authorId, this.userId));
+  }
+
+  public async findOneById(id: number): Promise<FragmentSelect> {
+    return this.drizzle
+      .select()
+      .from(tables.fragmentSchema)
+      .where(
+        and(
+          eq(tables.fragmentSchema.authorId, this.userId),
+          eq(tables.fragmentSchema.id, id),
+        ),
+      )
+      .then(fragments => fragments[0]);
+  }
+
+  public async update(
+    id: number,
+    payload: Omit<FragmentInsert, "authorId" | "createdAt" | "updatedAt">,
+  ): Promise<FragmentSelect> {
+    return this.drizzle
+      .update(tables.fragmentSchema)
+      .set({ ...payload, updatedAt: new Date() })
+      .where(
+        and(
+          eq(tables.fragmentSchema.authorId, this.userId),
+          eq(tables.fragmentSchema.id, id),
+        ),
+      )
+      .returning()
+      .then(fragments => fragments[0]);
+  }
+
+  public async delete(id: number): Promise<FragmentSelect> {
+    return this.drizzle
+      .delete(tables.fragmentSchema)
+      .where(
+        and(
+          eq(tables.fragmentSchema.authorId, this.userId),
+          eq(tables.fragmentSchema.id, id),
+        ),
+      )
+      .returning()
+      .then(fragments => fragments[0]);
   }
 }
